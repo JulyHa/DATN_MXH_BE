@@ -25,6 +25,7 @@ public class Users implements Serializable {
     private Long id;
     @Pattern(regexp = "^(.+)@(\\S+)$")
     @Column(unique = true, nullable = false)
+    @NotNull(message = "Không được bỏ trống")
     private String email;
     @Column(nullable = false)
     private String password;
@@ -39,6 +40,7 @@ public class Users implements Serializable {
     private String avatar;
     private String address;
     private String hobby;
+    private String verificationCode; // mã otp
     private boolean enabled = true; //Trạng thái tài khoản (block or active)
     private boolean seeFriendPermission = true; // default true: cho xem bạn bè
 
