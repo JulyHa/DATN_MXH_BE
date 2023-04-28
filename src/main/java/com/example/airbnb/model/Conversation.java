@@ -2,12 +2,16 @@ package com.example.airbnb.model;
 
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Conversation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

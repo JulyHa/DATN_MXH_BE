@@ -2,12 +2,16 @@ package com.example.airbnb.model;
 
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Friends {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,14 +22,8 @@ public class Friends {
     @ManyToOne
     @JoinColumn(name = "user_receive")
     private Users userReceive;
-    @ManyToOne
-    @JoinColumn(name = "friend_type")
-    private FriendType friendType;
-    // Có 4 dạng:
-    // chờ xác nhận(Wait For Confirmation)
-    // xác nhận(Confirm)
-    // theo dõi(Follow)
-    // chặn(Block)
+    // true la accept, false la waiting
+    private boolean status;
 
 
 }

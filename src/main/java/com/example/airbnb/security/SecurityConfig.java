@@ -5,8 +5,8 @@ package com.example.airbnb.security;
 import com.example.airbnb.security.jwt.CustomAccessDeniedHandler;
 import com.example.airbnb.security.jwt.JwtAuthenticationFilter;
 import com.example.airbnb.security.jwt.RestAuthenticationEntryPoint;
-import com.example.airbnb.service.UserService;
-import com.example.airbnb.service.impl.UserServiceImpl;
+import com.example.airbnb.service.IUserService;
+import com.example.airbnb.service.impl.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,13 +28,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig  extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public UserService userService() {
-        return new UserServiceImpl();
-    }
+//    @Bean
+//    public IUserService userService() {
+//        return new UserService();
+//    }
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -73,8 +73,8 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
         http.csrf().ignoringAntMatchers("/**");
         http.httpBasic().authenticationEntryPoint(restServicesEntryPoint());
         http.authorizeRequests()
-                .antMatchers("/login", "/register").permitAll()
-                .antMatchers("/users/**").access("hasRole('ROLE_USER')")
+                .antMatchers("/login", "/logoutUser", "/register", "/verify-otp","/checkUser").permitAll()
+                .antMatchers("/users/**", "/post/**", "/notification/**", "/friend/**", "/permission", "/changePw").access("hasRole('ROLE_USER')")
                 .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
 //                .antMatchers(HttpMethod.GET
 //                        ).access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")

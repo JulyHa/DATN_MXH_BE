@@ -1,6 +1,8 @@
 package com.example.airbnb.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -17,6 +19,8 @@ import java.util.Set;
 @Table
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Users implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -40,9 +44,13 @@ public class Users implements Serializable {
     private String avatar;
     private String address;
     private String hobby;
+    //default false , khi dang nhap thi chuyen thanh true, log out thi thanh false
+    private boolean checkOn;
     private String verificationCode; // mã otp
     private boolean enabled = true; //Trạng thái tài khoản (block or active)
     private boolean seeFriendPermission = true; // default true: cho xem bạn bè
+    private boolean commentPermission = true;  //default true: cho người lạ comment
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
@@ -51,13 +59,10 @@ public class Users implements Serializable {
     private Set<Role> roles;
 
 
-    public Users(String email, String password,  Set<Role> roles) {
-        this.email = email;
-        this.password = password;
-        this.roles = roles;
-    }
-
-    public Users() {
-    }
+//    public Users(String email, String password,  Set<Role> roles) {
+//        this.email = email;
+//        this.password = password;
+//        this.roles = roles;
+//    }
 
 }

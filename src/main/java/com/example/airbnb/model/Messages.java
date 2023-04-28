@@ -1,9 +1,8 @@
 package com.example.airbnb.model;
 
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +10,8 @@ import java.time.LocalDateTime;
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Messages {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +19,7 @@ public class Messages {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users users;
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
     private LocalDateTime sendTime;
     @ManyToOne

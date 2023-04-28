@@ -30,6 +30,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
     // email
     implementation group: 'org.jboss.aerogear', name: 'aerogear-otp-java', version: '1.0.0'

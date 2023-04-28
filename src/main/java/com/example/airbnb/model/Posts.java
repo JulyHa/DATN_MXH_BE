@@ -1,14 +1,15 @@
 package com.example.airbnb.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Posts {
@@ -20,11 +21,13 @@ public class Posts {
     private Users users;
     private String content;
     private LocalDateTime createAt;
-    @ManyToOne
-    @JoinColumn(name = "audience_id")
-    private PostAudience postAudience;
+    @Value("0")
     private Long countLikePost;
+    @Value("0")
     private Long countComment;
-    private boolean commentPermission;  //default true: cho người lạ comment
-    private boolean status;
+    @ManyToOne
+    @JoinColumn(name = "postStatus_id")
+    private PostStatus postStatus; // 1_Public, 2_Friend, 3_Private
+    @Value("true")
+    private boolean status; //true_hiển thị, false_xóa
 }

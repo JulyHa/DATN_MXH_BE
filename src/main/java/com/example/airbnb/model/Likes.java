@@ -2,14 +2,15 @@ package com.example.airbnb.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 @Entity
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Likes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

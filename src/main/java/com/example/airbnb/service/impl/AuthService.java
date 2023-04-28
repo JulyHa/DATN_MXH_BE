@@ -3,9 +3,9 @@ package com.example.airbnb.service.impl;
 import com.example.airbnb.model.Role;
 import com.example.airbnb.model.Users;
 import com.example.airbnb.dto.RegistrationRequest;
-import com.example.airbnb.repository.RoleRepository;
-import com.example.airbnb.repository.UserRepository;
-import com.example.airbnb.service.AuthService;
+import com.example.airbnb.repository.IRoleRepository;
+import com.example.airbnb.repository.IUserRepository;
+import com.example.airbnb.service.IAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,18 +20,18 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+public class AuthService implements IAuthService {
     @Autowired
-    private UserRepository userRepository;
+    private IUserRepository userRepository;
     @Autowired
-    private RoleRepository roleRepository;
+    private IRoleRepository roleRepository;
     @Autowired
     private JavaMailSender javaMailSender;
 
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public AuthServiceImpl() {
+    public AuthService() {
     }
 
     @Override
@@ -62,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
 
         String content = "Dear " + user.getFirstName()+" "+user.getLastName() + ",<br>"
                 + "Please click the below link to verify your email:<br>"
-                + "<a href='http://localhost:8080/api/auth/verify-otp?otp=" + user.getVerificationCode() + "'> Verify </a><br>"
+                + "<a href='http://localhost:8080/verify-otp?otp=" + user.getVerificationCode() + "'> Verify </a><br>"
                 + "Thank you!";
 
         helper.setText(content, true);
@@ -79,8 +79,6 @@ public class AuthServiceImpl implements AuthService {
 
             Users user = userOptional.get();
             user.setRoles(roles);
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            userRepository.save(user);
             user.setEnabled(true);
             user.setVerificationCode(null);
             userRepository.save(user);

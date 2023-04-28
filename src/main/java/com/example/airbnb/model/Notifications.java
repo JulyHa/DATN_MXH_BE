@@ -1,14 +1,15 @@
 package com.example.airbnb.model;
 
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Notifications {
@@ -16,12 +17,11 @@ public class Notifications {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "user_recipient_id")
-    private Users userRecipient;
+    @JoinColumn(name = "user_id")
+    private Users users;
     @ManyToOne
-    @JoinColumn(name = "user_send_id")
-    private Users userSender;
-    private String content;
+    @JoinColumn(name = "post_id")
+    private Posts post;
     @ManyToOne
     @JoinColumn(name = "noti_type_id")
     private NotificationType notificationType; // bài viết mới, bình luận, like, share, kết bạn, ...

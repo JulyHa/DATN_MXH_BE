@@ -1,6 +1,6 @@
 package com.example.airbnb.security.jwt;
 
-import com.example.airbnb.service.UserService;
+import com.example.airbnb.service.IUserService;
 import com.example.airbnb.service.impl.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,7 +20,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private JwtService jwtService;
 
 	@Autowired
-	private UserService userService;
+	private IUserService userService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,

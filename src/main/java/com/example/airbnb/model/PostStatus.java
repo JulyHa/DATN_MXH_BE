@@ -1,18 +1,20 @@
 package com.example.airbnb.model;
 
+import lombok.*;
+
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table
+@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostAudience {
+public class PostStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    // Public - Private - Friend
+//     1_Public, 2_Friend, 3_Private
 }

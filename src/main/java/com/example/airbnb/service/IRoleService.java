@@ -4,11 +4,6 @@ package com.example.airbnb.service;
 import com.example.airbnb.model.Role;
 
 
-public interface RoleService {
-    Iterable<Role> findAll();
-
-
-    void save(Role role);
-
+public interface IRoleService extends IGeneralService<Role> {
     Role findByName(String name);
 }
