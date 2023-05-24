@@ -59,10 +59,10 @@ public class Users implements Serializable {
     private Set<Role> roles;
 
 
-//    public Users(String email, String password,  Set<Role> roles) {
-//        this.email = email;
-//        this.password = password;
-//        this.roles = roles;
-//    }
+    public Users(String email, String password) {
+        this.email = email;
+        this.password = password;
+        this.enabled = true;
+    }
 
 }

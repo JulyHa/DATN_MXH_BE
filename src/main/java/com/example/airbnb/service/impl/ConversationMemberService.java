@@ -4,9 +4,10 @@ import com.example.airbnb.model.ConversationMember;
 import com.example.airbnb.repository.IConversationMemberRepository;
 import com.example.airbnb.service.IConversationMemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
+@Service
 public class ConversationMemberService implements IConversationMemberService {
 
     @Autowired

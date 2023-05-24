@@ -2,6 +2,7 @@ package com.example.airbnb.controller;
 
 import com.example.airbnb.dto.JwtResponse;
 import com.example.airbnb.dto.RegistrationRequest;
+import com.example.airbnb.dto.UserUpdate;
 import com.example.airbnb.model.Users;
 import com.example.airbnb.service.IAuthService;
 import com.example.airbnb.service.IUserService;
@@ -75,9 +76,7 @@ public class AccountController {
             String jwt = jwtService.generateTokenLogin(authentication);
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             Users currentUser = userService.findByEmail(user.getEmail());
-//            return new ResponseEntity<>(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(), userDetails.getAuthorities()), HttpStatus.OK);
             return new ResponseEntity<>(new JwtResponse(jwt, currentUser.getId(), currentUser, userDetails.getAuthorities()), HttpStatus.OK);
-//            return new ResponseEntity<>(currentUser, HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -89,5 +88,12 @@ public class AccountController {
         usersLogOut.setCheckOn(false);
         userService.save(usersLogOut);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PutMapping("/changePw")
+    public ResponseEntity<?> changePassword(@RequestBody UserUpdate userUpdate) {
+        if (userService.changePassword(userUpdate)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

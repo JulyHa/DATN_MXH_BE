@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface IMessageRepository extends JpaRepository<Messages, Long> {
     List<Messages> findAllByConversation(Conversation conversation);
 
-    @Query(value = "SELECT * FROM messages WHERE conversation_id = ?1 ORDER BY text_at DESC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM messages WHERE conversation_id = ?1 ORDER BY send_time DESC LIMIT 1", nativeQuery = true)
     Optional<Messages> getLatestMessage(Long id);
 }

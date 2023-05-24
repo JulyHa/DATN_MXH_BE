@@ -58,7 +58,11 @@ public class PostController {
         iPostService.save(post);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deletePost(@PathVariable Long id) {
+        iPostService.remove(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
     @PutMapping("/image")
     public ResponseEntity<?> updateImgPost(@RequestBody List<Long> deleteList){
         for (Long i: deleteList){
@@ -248,12 +252,6 @@ public class PostController {
         }
         return new ResponseEntity<>(objects, HttpStatus.OK);
     }
-
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> deletePost(@PathVariable Long id) {
-        iPostService.remove(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
     @GetMapping("/wall/{id}/search")
     public ResponseEntity<Iterable<Posts>>searchOnWall(@PathVariable("id") Long id,@RequestParam ("search") String content){
         Iterable<Posts>posts=iPostService.findAllPostByUserIdAndContent(id,content);
@@ -276,6 +274,7 @@ public class PostController {
     public ResponseEntity<?> comment(@RequestBody Comments postComment){
         postComment.setCreateAt(LocalDateTime.now());
         postComment.setCountLike(0L);
+        postComment.setStatus(true);
         iCommentService.save(postComment);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -309,7 +308,9 @@ public class PostController {
     public ResponseEntity<?> editComment(@PathVariable Long id, @RequestBody Comments postComment){
         Optional<Comments> postCommentOptional = iCommentService.findById(id);
         if (postCommentOptional.isPresent()){
-            iCommentService.save(postComment);
+            postCommentOptional.get().setCreateAt(LocalDateTime.now());
+            postCommentOptional.get().setContent(postComment.getContent());
+            iCommentService.save(postCommentOptional.get());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

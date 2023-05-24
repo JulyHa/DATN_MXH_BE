@@ -3,9 +3,7 @@ package com.example.airbnb.service.impl;
 import com.example.airbnb.model.Posts;
 import com.example.airbnb.model.Users;
 import com.example.airbnb.repository.IPostRepository;
-import com.example.airbnb.service.INotificationService;
-import com.example.airbnb.service.IPostImageService;
-import com.example.airbnb.service.IPostService;
+import com.example.airbnb.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +20,10 @@ public class PostService implements IPostService {
     private IPostImageService imagePostService;
     @Autowired
     private INotificationService notificationService;
+    @Autowired
+    private ILikeService iLikeService;
+    @Autowired
+    private ICommentService iCommentService;
     @Override
     public Iterable<Posts> findAll() {
         return postRepository.findAllByStatus(true);
@@ -68,11 +70,11 @@ public class PostService implements IPostService {
     @Override
     @Transactional
     public void remove(Long id) {
-//        postLikeService.deleteAllByPost(findById(id).get());
-//        postCommentService.deleteAllByPost(findById(id).get());
-//        notificationService.deleteAllByPost(findById(id).get());
-//        imagePostService.deleteAllByPost(findById(id).get());
-//        postRepository.deleteById(id);
+        iLikeService.deleteAllByPost(findById(id).get());
+        iCommentService.deleteAllByPost(findById(id).get());
+        notificationService.deleteAllByPost(findById(id).get());
+        imagePostService.deleteAllByPosts(findById(id).get());
+        postRepository.deleteById(id);
     }
 
     @Override

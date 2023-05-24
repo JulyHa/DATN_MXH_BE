@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface IPostRepository extends JpaRepository<Posts, Long> {
-    @Query(value = "select * from posts where user_id = ?1 and (post_status_id = 1 or post_status_id = 2)", nativeQuery = true)
+    @Query(value = "select * from posts where user_id = ?1 and (post_status_id = 1 or post_status_id = 3)", nativeQuery = true)
     List<Posts> findAllFriendPost(Long id);
     List<Posts> findAllByUsers(Users users);
     @Query(value = "select * from posts where user_id = ?1 and post_status_id = 1", nativeQuery = true)

@@ -18,10 +18,10 @@ public class Friends {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "user_request")
-    private Users userRequest;
+    private Users usersRequest;
     @ManyToOne
     @JoinColumn(name = "user_receive")
-    private Users userReceive;
+    private Users usersReceive;
     // true la accept, false la waiting
     private boolean status;
 

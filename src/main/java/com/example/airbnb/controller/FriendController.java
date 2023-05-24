@@ -52,7 +52,7 @@ public class FriendController {
 
     @PostMapping
     public ResponseEntity<?> requestFriend(@RequestBody Friends friendRequest) {
-        if (iFriendService.findRequest(friendRequest.getUserReceive().getId(), friendRequest.getUserRequest().getId()).isPresent()) {
+        if (iFriendService.findRequest(friendRequest.getUsersReceive().getId(), friendRequest.getUsersRequest().getId()).isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         iFriendService.save(friendRequest);

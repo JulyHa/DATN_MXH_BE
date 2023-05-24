@@ -1,5 +1,6 @@
 package com.example.airbnb.service.impl;
 
+import com.example.airbnb.dto.UserUpdate;
 import com.example.airbnb.model.Users;
 import com.example.airbnb.dto.UserPrinciple;
 import com.example.airbnb.repository.IUserRepository;
@@ -127,6 +128,16 @@ public class UserService implements IUserService {
             }
         }
         return isRegister;
+    }
+    @Override
+    public boolean changePassword(UserUpdate userUpdate) {
+        Users users_update = userRepository.findById(userUpdate.getId()).get();
+        boolean res = checkUser(new Users(users_update.getEmail(), userUpdate.getOldPassword()));
+        if(res){
+            users_update.setPassword(passwordEncoder.encode(userUpdate.getNewPassword()));
+            userRepository.save(users_update);
+        }
+        return res;
     }
 
     @Override

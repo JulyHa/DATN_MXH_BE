@@ -18,8 +18,6 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     private IUserService userService;
-
-
     @GetMapping("/")
     public ResponseEntity<Iterable<Users>> showAllUser() {
         Iterable<Users> users = userService.findAll();
@@ -30,12 +28,11 @@ public class UserController {
         Iterable<Users> users = userService.findAll();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
-
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Users> getProfile(@PathVariable Long id) {
-//        Optional<Users> userOptional = this.userService.findById(id);
-//        return userOptional.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Users> getProfile(@PathVariable Long id) {
+        Optional<Users> userOptional = this.userService.findById(id);
+        return userOptional.map(user -> new ResponseEntity<>(user, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
     @GetMapping("/friend/{id}")
     public ResponseEntity<List<Users>> findAllFriend(@PathVariable Long id) {

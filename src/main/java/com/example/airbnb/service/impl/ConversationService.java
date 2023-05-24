@@ -8,10 +8,11 @@ import com.example.airbnb.repository.IConversationRepository;
 import com.example.airbnb.repository.IMessageRepository;
 import com.example.airbnb.service.IConversationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
-
+@Service
 public class ConversationService implements IConversationService {
     @Autowired
     private IConversationRepository conversationRepository;

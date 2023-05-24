@@ -1,5 +1,6 @@
 package com.example.airbnb.service;
 
+import com.example.airbnb.dto.UserUpdate;
 import com.example.airbnb.model.Users;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +18,7 @@ public interface IUserService extends UserDetailsService {
     boolean checkLogin(Users user);
     boolean checkUser(Users user);
     boolean isRegister(Users user);
+    boolean changePassword(UserUpdate userUpdate);
     List<Users> findFriendRequestsByIdAndStatusTrue(Long id);
     List<Users> findUsersActiveByName(String name);
     public List<Users> listFriendRequest(Long id);

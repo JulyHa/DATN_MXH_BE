@@ -6,11 +6,13 @@ import com.example.airbnb.repository.IConversationRepository;
 import com.example.airbnb.repository.IMessageRepository;
 import com.example.airbnb.service.IMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class MessageService implements IMessageService {
     @Autowired
     private IMessageRepository messageRepository;
