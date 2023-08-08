@@ -35,23 +35,24 @@ public class AuthService implements IAuthService {
     }
 
     @Override
-    public boolean registerUser(RegistrationRequest registrationRequest) throws MessagingException {
+    public Users registerUser(RegistrationRequest registrationRequest) throws MessagingException {
         Iterable<Users> users = userRepository.findAll();
         for (Users currentUser : users) {
             if (currentUser.getEmail().equals(registrationRequest.getEmail())) {
-                return false;
+                return null;
             }
         }
         Users user = new Users();
         user.setFirstName(registrationRequest.getFirstName());
         user.setLastName(registrationRequest.getLastName());
+        user.setAvatar("https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1");
         user.setEmail(registrationRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
         user.setEnabled(false);
         user.setVerificationCode(generateOTP());
         userRepository.save(user);
         sendVerificationEmail(user);
-        return true;
+        return user;
     }
 
     private void sendVerificationEmail(Users user) throws MessagingException {
@@ -62,7 +63,8 @@ public class AuthService implements IAuthService {
 
         String content = "Dear " + user.getFirstName()+" "+user.getLastName() + ",<br>"
                 + "Please click the below link to verify your email:<br>"
-                + "<a href='http://localhost:8080/verify-otp?otp=" + user.getVerificationCode() + "'> Verify </a><br>"
+//                + "<a href='http://localhost:8080/verify-otp?otp=" + user.getVerificationCode() + "'> Verify </a><br>"
+                + "<a href='http://localhost:5000/confirm/" +user.getId() +"/" + user.getVerificationCode() + "'> Verify </a><br>"
                 + "Thank you!";
 
         helper.setText(content, true);
@@ -76,13 +78,21 @@ public class AuthService implements IAuthService {
             Role role = roleRepository.findByName("ROLE_USER");
             Set<Role> roles = new HashSet<>();
             roles.add(role);
-
             Users user = userOptional.get();
             user.setRoles(roles);
             user.setEnabled(true);
             user.setVerificationCode(null);
             userRepository.save(user);
             return true;
+        }
+        return false;
+    }
+    @Override
+    public boolean cancel(Long id) {
+        Optional<Users> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+           userRepository.deleteById(id);
+           return true;
         }
         return false;
     }

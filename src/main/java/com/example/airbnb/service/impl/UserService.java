@@ -147,7 +147,7 @@ public class UserService implements IUserService {
 
     @Override
     public List<Users> findUsersActiveByName(String name) {
-        return userRepository.findUsersByFirstNameOrLastNameContainingAndEnabledIsTrue(name, name);
+        return userRepository.findUsersByFirstNameContainingOrLastNameContainingAndEnabledIsTrue(name, name);
     }
 
     @Override

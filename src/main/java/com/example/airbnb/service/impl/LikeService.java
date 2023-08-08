@@ -61,8 +61,8 @@ public class LikeService implements ILikeService {
         post.setCountLikePost(post.getCountLikePost() + 1);
         postRepository.save(post);
         if (id1 != post.getUsers().getId()) {
-            notificationService.deleteNotification(id2, 2L);
-            notificationService.createNotification(id1, id2, 2L); // thông báo
+//            notificationService.deleteNotification(id2, 3L);
+            notificationService.createNotification(id1, id2, 3L); // thông báo
         }
         likeRepository.likePost(id1, id2);
     }

@@ -39,19 +39,28 @@ public class AccountController {
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        Users result;
         try {
-            boolean result = authService.registerUser(registrationRequest);
-            if(!result){
+            result = authService.registerUser(registrationRequest);
+            if(result == null){
                 return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
             }
         } catch (MessagingException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(result,HttpStatus.OK);
     }
     @GetMapping("/verify-otp")
     public ResponseEntity<?> verifyOTP(@RequestParam String otp) {
         if (authService.verifyOTP(otp)) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/cancel")
+    public ResponseEntity<?> cancel(@RequestParam Long id) {
+        if (authService.cancel(id)) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

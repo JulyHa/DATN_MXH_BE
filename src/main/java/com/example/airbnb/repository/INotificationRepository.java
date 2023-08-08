@@ -13,10 +13,12 @@ import java.util.List;
 public interface INotificationRepository extends JpaRepository<Notifications, Long> {
     void deleteAllByPost(Posts post);
     @Modifying
-    @Query(value = "select * from notifications noti join post on noti.post_id = post.id where post.user_id = ?1 and (noti.noti_type_id = 2 or noti.noti_type_id = 3)", nativeQuery = true)
+    @Query(value = "select * from notifications noti join posts p on noti.post_id = p.id " +
+            "where p.user_id = ?1 and (noti.noti_type_id = 3 or noti.noti_type_id = 4)", nativeQuery = true)
     List<Notifications> getAll(Long userId);
 
-    @Query(value = "select * from notifications noti where noti.noti_type_id = 1", nativeQuery = true)
+    @Modifying
+    @Query(value = "select * from notifications noti where noti.noti_type_id = 2", nativeQuery = true)
     List<Notifications> getAllNewFriendPost(Long userId);
 
     @Modifying

@@ -17,4 +17,7 @@ public interface IPostRepository extends JpaRepository<Posts, Long> {
     List<Posts> findAllFriendPublicPost(Long id);
     Iterable<Posts> findAllByStatus(boolean status);
     Iterable<Posts>findPostsByUsers_IdAndContentContaining(Long id,String content);
+
+    @Query(value = "select * from posts where user_id = ?1 and content like ?2 and (post_status_id = 1 or post_status_id = 3)", nativeQuery = true)
+    List<Posts> searchPost(Long id, String search);
 }

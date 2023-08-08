@@ -6,6 +6,7 @@ import com.example.airbnb.model.Users;
 import javax.mail.MessagingException;
 
 public interface IAuthService {
-    boolean registerUser(RegistrationRequest registrationRequest) throws MessagingException;
+    Users registerUser(RegistrationRequest registrationRequest) throws MessagingException;
     boolean verifyOTP(String otp);
+    boolean cancel(Long id);
 }

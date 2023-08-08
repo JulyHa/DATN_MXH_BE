@@ -24,21 +24,26 @@ public class PostController {
     @Autowired
     private ILikeService iLikeService;
     @Autowired
-    private ICommentService iCommentService;
-    @Autowired
     private IFriendService iFriendService;
     @Autowired
-    private IPostStatusService postStatusService;
+    private IPostStatusService iPostStatusService;
+    @Autowired
+    private INotificationService iNotificationService;
 
     @PostMapping
-    public ResponseEntity<Posts> create(@RequestBody Posts post) {
-        iPostService.save(post);
-        return new ResponseEntity<>(post, HttpStatus.CREATED);
+    public ResponseEntity<Posts> create(@RequestBody Posts posts) {
+        posts.setCreateAt(LocalDateTime.now());
+        posts.setStatus(true);
+        posts.setCountLikePost(0L);
+        posts.setCountComment(0L);
+        posts.setStatus(true);
+        iPostService.save(posts);
+        return new ResponseEntity<>(posts, HttpStatus.CREATED);
     }
 
     @GetMapping("/status")
     public ResponseEntity<Iterable<PostStatus>> getAllPostStatus() {
-        return new ResponseEntity<>(postStatusService.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(iPostStatusService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping("/create/img")
@@ -55,7 +60,7 @@ public class PostController {
         if (!postOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        iPostService.save(post);
+        iPostService.update(post);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("{id}")
@@ -156,11 +161,6 @@ public class PostController {
         return postLike.isPresent();
     }
 
-    private boolean checkUserLikedComment(Long userId, Long commentId) {
-        Optional<Likes> commentLike = iLikeService.findCommentLike(userId, commentId);
-        return commentLike.isPresent();
-    }
-
     @PostMapping("/image")
     public ResponseEntity<?> getImg(@RequestBody Posts[] posts) {
         List<Object> objects = new ArrayList<>();
@@ -169,52 +169,6 @@ public class PostController {
             objects.add(imagePosts);
         }
         return new ResponseEntity<>(objects, HttpStatus.OK);
-    }
-
-    @PostMapping("/like")
-    public ResponseEntity<List<Long>> getCountLikePost(@RequestBody Posts[] posts) {
-        List<Long> list = new ArrayList<>();
-        for (Posts p : posts) {
-            list.add(iLikeService.countPostLike(p.getId()));
-        }
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-
-    @PostMapping("/get/like")
-    public ResponseEntity<Long> getCountLikeOnePost(@RequestBody Posts post) {
-        return new ResponseEntity<>(iLikeService.countPostLike(post.getId()), HttpStatus.OK);
-    }
-
-    @PostMapping("/comment")
-    public ResponseEntity<List<Long>> getCountCommentPost(@RequestBody Posts[] posts) {
-        List<Long> list = new ArrayList<>();
-        for (Posts p : posts) {
-            list.add(iCommentService.countPostComment(p.getId()));
-        }
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-
-    @PostMapping("/get/comment")
-    public ResponseEntity<Long> getCountCommentOnePost(@RequestBody Posts post) {
-        return new ResponseEntity<>(iCommentService.countPostComment(post.getId()), HttpStatus.OK);
-    }
-
-    @GetMapping("/{id}/comment")
-    public ResponseEntity<List<Comments>> getAllPostComment(@PathVariable Long id) {
-        List<Comments> postCommentList = iCommentService.findAllByPost(iPostService.findById(id).get());
-        if (postCommentList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(postCommentList, HttpStatus.OK);
-    }
-
-    @PostMapping("/comment/like")
-    public ResponseEntity<List<Integer>> getCountLikeComment(@RequestBody Comments[] comments) {
-        List<Integer> list = new ArrayList<>();
-        for (Comments c : comments) {
-            list.add(iLikeService.countCommentLike(c.getId()));
-        }
-        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @GetMapping("/get/{id}")
@@ -243,15 +197,6 @@ public class PostController {
         return new ResponseEntity<>(usersList, HttpStatus.OK);
     }
 
-    @PostMapping("/list/comment")
-    public ResponseEntity<?> getListCommentAllPost(@RequestBody Posts[] posts){
-        List<Object> objects = new ArrayList<>();
-        for (Posts p : posts) {
-            List<Comments> postCommentList = iCommentService.findAllByPost(p);
-            objects.add(postCommentList);
-        }
-        return new ResponseEntity<>(objects, HttpStatus.OK);
-    }
     @GetMapping("/wall/{id}/search")
     public ResponseEntity<Iterable<Posts>>searchOnWall(@PathVariable("id") Long id,@RequestParam ("search") String content){
         Iterable<Posts>posts=iPostService.findAllPostByUserIdAndContent(id,content);
@@ -259,103 +204,26 @@ public class PostController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }return new ResponseEntity<>(posts,HttpStatus.OK);
     }
-
-    @GetMapping("/interact/like/{id1}/{id2}")
-    public ResponseEntity<?> likeOrUnlike(@PathVariable("id1") Long userId, @PathVariable("id2") Long postId){
-        if (checkUserLiked(userId, postId)){
-            iLikeService.unLikePost(userId, postId);
-        }else {
-            iLikeService.likePost(userId, postId);
+    @GetMapping("/search/{id}/{search}")
+    public ResponseEntity<List<PostDisplay>> searchPost(@PathVariable Long id, @PathVariable("search") String search) {
+        List<Users> users = iUserService.findFriendRequestsByIdAndStatusTrue(id);
+        List<PostDisplay> postDisplays = new ArrayList<>();
+        List<Posts> posts = new ArrayList<>();
+        search = "%"+search+"%";
+        for (Users u : users) {
+            posts.addAll(iPostService.searchPost(u.getId(), search));
         }
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/interact/comment")
-    public ResponseEntity<?> comment(@RequestBody Comments postComment){
-        postComment.setCreateAt(LocalDateTime.now());
-        postComment.setCountLike(0L);
-        postComment.setStatus(true);
-        iCommentService.save(postComment);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping("/interact/comment/{id}")
-    public ResponseEntity<Comments> getComment(@PathVariable Long id){
-        Optional<Comments> postComment = iCommentService.findById(id);
-        return postComment.map(comment -> new ResponseEntity<>(comment, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @GetMapping("/interact/comment/like/{id1}/{id2}")
-    public ResponseEntity<?> likeOrUnlikeComment(@PathVariable("id1") Long userId, @PathVariable("id2") Long cmtId){
-        if (checkUserLikedComment(userId, cmtId)){
-            iLikeService.unLikeComment(userId, cmtId);
-        }else {
-            iLikeService.likeComment(userId, cmtId);
+        if (posts.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        for (Posts post : posts) {
+            transferPostDisplay(postDisplays, post);
+        }
+        for (PostDisplay p : postDisplays) {
+            p.setCheckUserLiked(checkUserLiked(id, p.getId()));
+        }
+        Collections.sort(postDisplays, Comparator.comparing(PostDisplay::getCreateAt).reversed());
+        return new ResponseEntity<>(postDisplays, HttpStatus.OK);
     }
 
-    @DeleteMapping("comment/{id}")
-    public ResponseEntity<?> deleteComment(@PathVariable Long id){
-        Optional<Comments> postComment = iCommentService.findById(id);
-        if (postComment.isPresent()){
-            iCommentService.remove(id);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PutMapping("comment/{id}")
-    public ResponseEntity<?> editComment(@PathVariable Long id, @RequestBody Comments postComment){
-        Optional<Comments> postCommentOptional = iCommentService.findById(id);
-        if (postCommentOptional.isPresent()){
-            postCommentOptional.get().setCreateAt(LocalDateTime.now());
-            postCommentOptional.get().setContent(postComment.getContent());
-            iCommentService.save(postCommentOptional.get());
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("comment/countlike")
-    public ResponseEntity<?> countLikeListComment(@RequestBody List<List<Comments>> postComments){
-        List<Object> list = new ArrayList<>();
-        for (List<Comments> postComment : postComments) {
-            List<Integer> integerList = new ArrayList<>();
-            for (Comments comments : postComment) {
-                integerList.add(iLikeService.countCommentLike(comments.getId()));
-            }
-            list.add(integerList);
-        }
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-
-    @PostMapping("comment/countlike/get")
-    public ResponseEntity<?> countLikeListCommentOnePost(@RequestBody List<Comments> postComments){
-        List<Integer> integerList = new ArrayList<>();
-        for (Comments postComment : postComments) {
-            integerList.add(iLikeService.countCommentLike(postComment.getId()));
-        }
-        return new ResponseEntity<>(integerList, HttpStatus.OK);
-    }
-
-    @PostMapping("comment/check/like/{id}")
-    public ResponseEntity<?> checkLikeListComment(@RequestBody List<List<Comments>> postComments, @PathVariable Long id){
-        List<Object> list = new ArrayList<>();
-        for (List<Comments> postComment : postComments) {
-            List<Boolean> booleanList = new ArrayList<>();
-            for (Comments comments : postComment) {
-                booleanList.add(checkUserLikedComment(id, comments.getId()));
-            }
-            list.add(booleanList);
-        }
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-
-    @PostMapping("comment/check/like/get/{id}")
-    public ResponseEntity<?> checkLikeComment(@RequestBody List<Comments> postComments, @PathVariable Long id){
-        List<Boolean> booleanList = new ArrayList<>();
-        for (Comments postComment : postComments) {
-            booleanList.add(checkUserLikedComment(id, postComment.getId()));
-        }
-        return new ResponseEntity<>(booleanList, HttpStatus.OK);
-    }
 }

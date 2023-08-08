@@ -49,10 +49,10 @@ public class NotificationController {
     public ResponseEntity<List<Long>> other(@RequestBody Notifications[] notifications){
         List<Long> list = new ArrayList<>();
         for (Notifications n: notifications){
-            if (n.getNotificationType().getId() == 2) {
+            if (n.getNotificationType().getId() == 3) {
                 list.add(iLikeService.countPostLike(n.getPost().getId()));
             }else {
-                if (n.getNotificationType().getId() == 3){
+                if (n.getNotificationType().getId() == 4){
                     list.add(iCommentService.countUserCommentPost(n.getPost().getId()));
                 }else {
                     list.add(1L);

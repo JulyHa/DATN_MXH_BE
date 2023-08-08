@@ -60,10 +60,12 @@ public class CommentService implements ICommentService {
     @Transactional
     public void save(Comments comment) {
         Posts post = postRepository.findById(comment.getIdParent()).get();
+        post.setCountComment(post.getCountComment()+1);
         if ((comment.getId() == null) && (!post.getUsers().getId().equals(comment.getUsers().getId()))){
-            notificationService.deleteNotification(post.getId(), 3L);
-            notificationService.createNotification(comment.getUsers().getId(), comment.getId(), 3L);
+//            notificationService.deleteNotification(post.getId(), 4L);
+            notificationService.createNotification(comment.getUsers().getId(), post.getId(), 4L);
         }
+        postRepository.save(post);
         commentRepository.save(comment);
     }
 

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,15 +36,10 @@ public class PostService implements IPostService {
     @Override
     @Transactional
     public void save(Posts posts) {
-        posts.setCreateAt(LocalDateTime.now());
-        posts.setStatus(true);
-        posts.setCountLikePost(0L);
-        posts.setCountComment(0L);
-        posts.setStatus(true);
          postRepository.save(posts);
         if (posts.getId() != null){
-            if (posts.getPostStatus().getId() != 3) {
-                notificationService.createNotification(posts.getUsers().getId(), posts.getId(), 1L);
+            if (posts.getPostStatus().getId() != 2) {
+                notificationService.createNotification(posts.getUsers().getId(), posts.getId(), 2L);
             }
         }
 
@@ -80,6 +74,10 @@ public class PostService implements IPostService {
     @Override
     public List<Posts> findAllFriendPost(Long id) {
         return postRepository.findAllFriendPost(id);
+    }
+    @Override
+    public List<Posts> searchPost(Long id, String search){
+        return postRepository.searchPost(id, search);
     }
 
     @Override

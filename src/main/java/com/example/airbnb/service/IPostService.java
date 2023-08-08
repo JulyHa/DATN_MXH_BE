@@ -8,6 +8,7 @@ import java.util.List;
 public interface IPostService extends IGeneralService<Posts> {
     boolean update(Posts posts);
     List<Posts> findAllFriendPost(Long id);
+    List<Posts> searchPost(Long id, String search);
     List<Posts> findAllPersonalPost(Users users);
     List<Posts> findAllFriendPublicPost(Long id);
     Iterable<Posts> findAllPostByUserIdAndContent(Long id ,String content);

@@ -5,8 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table
-@Data
+@Table(name= "notification_friend", schema = "be_socaialv")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -16,10 +15,10 @@ public class NotificationFriend {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "userSend_id")
+    @JoinColumn(name = "user_send_id")
     private Users usersSend;
     @ManyToOne
-    @JoinColumn(name = "userReceive_id")
+    @JoinColumn(name = "user_receive_id")
     private Users usersReceive;
     @ManyToOne
     @JoinColumn(name = "notificationType_id")

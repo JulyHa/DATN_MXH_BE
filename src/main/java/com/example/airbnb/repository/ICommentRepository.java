@@ -12,9 +12,9 @@ public interface ICommentRepository extends JpaRepository<Comments, Long> {
 
 //    @Query(value = "select count(user_id) from post_comment where post_id = ?1", nativeQuery = true)
 //    Integer countPostComment(Long postId);
-    @Query(value = "select * from comments where id_parent = ?1 and status = 1", nativeQuery = true)
+    @Query(value = "select * from comments where id_parent = ?1 and status = true", nativeQuery = true)
     List<Comments> findAllByPost(Long idPost);
     void deleteAllByIdParentAndStatusTrue(Long idPost);
-    @Query(value = "SELECT count(DISTINCT user_id) FROM post_comment where post_id = ?1", nativeQuery = true)
+    @Query(value = "SELECT count(DISTINCT user_id) FROM comments where id_parent = ?1 and parent_type=true", nativeQuery = true)
     Long countUserCommentPost(Long postId);
 }
